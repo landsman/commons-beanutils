@@ -22,8 +22,8 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.commons.beanutils2.bugs.other.Jira87BeanFactory;
-import org.apache.commons.collections.BulkTest;
-import org.apache.commons.collections.map.AbstractTestMap;
+import org.apache.commons.beanutils2.collections.AbstractMapTest;
+import org.apache.commons.beanutils2.collections.BulkTest;
 
 import junit.framework.Test;
 import junit.textui.TestRunner;
@@ -32,8 +32,7 @@ import junit.textui.TestRunner;
  * Test cases for BeanMap
  *
  */
-@SuppressWarnings("deprecation")
-public class BeanMapTestCase extends AbstractTestMap {
+public class BeanMapTestCase extends AbstractMapTest<String, Object> {
 
     public static class BeanThrowingExceptions extends BeanWithProperties {
         private static final long serialVersionUID = 1L;
@@ -192,9 +191,20 @@ public class BeanMapTestCase extends AbstractTestMap {
     // Then, I manually added the "class" key, which is a property that exists for
     // all beans (and all objects for that matter.
     @Override
-    public Object[] getSampleKeys() {
-        final Object[] keys = { "someIntValue", "someLongValue", "someDoubleValue", "someFloatValue", "someShortValue", "someByteValue", "someCharValue",
-                "someIntegerValue", "someStringValue", "someObjectValue", "class", };
+    public String[] getSampleKeys() {
+        final String[] keys = new String[] {
+            "someIntValue",
+            "someLongValue",
+            "someDoubleValue",
+            "someFloatValue",
+            "someShortValue",
+            "someByteValue",
+            "someCharValue",
+            "someIntegerValue",
+            "someStringValue",
+            "someObjectValue",
+            "class",
+        };
         return keys;
     }
 
@@ -257,6 +267,46 @@ public class BeanMapTestCase extends AbstractTestMap {
         bean.setSomeStringValue("SomeStringValue");
         bean.setSomeObjectValue(objectInFullMap);
         return new BeanMap(bean);
+    }
+
+    @Override
+    public String[] ignoredTests() {
+        // Ignore the serialization tests on collection views.
+        return new String[] {
+         "TestBeanMap.bulkTestMapEntrySet.testCanonicalEmptyCollectionExists",
+         "TestBeanMap.bulkTestMapEntrySet.testCanonicalFullCollectionExists",
+         "TestBeanMap.bulkTestMapKeySet.testCanonicalEmptyCollectionExists",
+         "TestBeanMap.bulkTestMapKeySet.testCanonicalFullCollectionExists",
+         "TestBeanMap.bulkTestMapValues.testCanonicalEmptyCollectionExists",
+         "TestBeanMap.bulkTestMapValues.testCanonicalFullCollectionExists",
+         "TestBeanMap.bulkTestMapEntrySet.testSimpleSerialization",
+         "TestBeanMap.bulkTestMapKeySet.testSimpleSerialization",
+         "TestBeanMap.bulkTestMapEntrySet.testSerializeDeserializeThenCompare",
+         "TestBeanMap.bulkTestMapKeySet.testSerializeDeserializeThenCompare"
+        };
+    }
+
+    /**
+     * Need to override this method because the "clear()" method on the bean
+     * map just returns the bean properties to their default states.  It does
+     * not actually remove the mappings as per the map contract.  The default
+     * testClear() methods checks that the clear method throws an
+     * UnsupportedOperationException since this class is not add/remove
+     * modifiable.  In our case though, we do not always throw that exception.
+     */
+    @Override
+    public void testMapClear() {
+        //TODO: make sure a call to BeanMap.clear returns the bean to its
+        //default initialization values.
+    }
+
+    /**
+     * Need to override this method because the "put()" method on the bean
+     * doesn't work for this type of Map.
+     */
+    @Override
+    public void testMapPut() {
+        // see testBeanMapPutAllWriteable
     }
 
     public void testBeanMapClone() {
@@ -382,6 +432,11 @@ public class BeanMapTestCase extends AbstractTestMap {
             assertNotNull("Setter exception cause 2 null", cause2);
             assertEquals("Setter exception cause 2", TestException.class, cause2.getClass());
         }
+    }
+
+    @Override
+    public Map<String, Object> makeObject() {
+        return new BeanMap();
     }
 
     /**
