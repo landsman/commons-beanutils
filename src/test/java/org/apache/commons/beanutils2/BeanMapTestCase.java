@@ -236,11 +236,6 @@ public class BeanMapTestCase extends AbstractMapTest<String, Object> {
     }
 
     @Override
-    public Map<String, Object> makeEmptyMap() {
-        return new BeanMap();
-    }
-
-    @Override
     public Map<String, Object> makeFullMap() {
         // note: These values must match (i.e. .equals() must return true)
         // those returned from getSampleValues().
