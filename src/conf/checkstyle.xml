@@ -45,9 +45,6 @@ limitations under the License.
     <module name="JavadocType">
       <property name="scope" value="protected"/>
     </module>
-    <module name="JavadocMethod">
-      <property name="accessModifiers" value="protected"/>
-    </module>
   </module>
   <!-- Line with trailing spaces -->
   <module name="RegexpSingleline">
