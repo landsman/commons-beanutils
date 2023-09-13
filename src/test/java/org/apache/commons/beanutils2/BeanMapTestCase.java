@@ -217,17 +217,6 @@ public class BeanMapTestCase extends AbstractMapTest<String, Object> {
         return values;
     }
 
-    @Override
-    public String[] ignoredTests() {
-        // Ignore the serialization tests on collection views.
-        return new String[] { "TestBeanMap.bulkTestMapEntrySet.testCanonicalEmptyCollectionExists",
-                "TestBeanMap.bulkTestMapEntrySet.testCanonicalFullCollectionExists", "TestBeanMap.bulkTestMapKeySet.testCanonicalEmptyCollectionExists",
-                "TestBeanMap.bulkTestMapKeySet.testCanonicalFullCollectionExists", "TestBeanMap.bulkTestMapValues.testCanonicalEmptyCollectionExists",
-                "TestBeanMap.bulkTestMapValues.testCanonicalFullCollectionExists", "TestBeanMap.bulkTestMapEntrySet.testSimpleSerialization",
-                "TestBeanMap.bulkTestMapKeySet.testSimpleSerialization", "TestBeanMap.bulkTestMapEntrySet.testSerializeDeserializeThenCompare",
-                "TestBeanMap.bulkTestMapKeySet.testSerializeDeserializeThenCompare" };
-    }
-
     /**
      * The mappings in a BeanMap are fixed on the properties the underlying bean has. Adding and removing mappings is not possible, thus this method is
      * overridden to return false.
@@ -284,29 +273,6 @@ public class BeanMapTestCase extends AbstractMapTest<String, Object> {
          "TestBeanMap.bulkTestMapEntrySet.testSerializeDeserializeThenCompare",
          "TestBeanMap.bulkTestMapKeySet.testSerializeDeserializeThenCompare"
         };
-    }
-
-    /**
-     * Need to override this method because the "clear()" method on the bean
-     * map just returns the bean properties to their default states.  It does
-     * not actually remove the mappings as per the map contract.  The default
-     * testClear() methods checks that the clear method throws an
-     * UnsupportedOperationException since this class is not add/remove
-     * modifiable.  In our case though, we do not always throw that exception.
-     */
-    @Override
-    public void testMapClear() {
-        //TODO: make sure a call to BeanMap.clear returns the bean to its
-        //default initialization values.
-    }
-
-    /**
-     * Need to override this method because the "put()" method on the bean
-     * doesn't work for this type of Map.
-     */
-    @Override
-    public void testMapPut() {
-        // see testBeanMapPutAllWriteable
     }
 
     public void testBeanMapClone() {
